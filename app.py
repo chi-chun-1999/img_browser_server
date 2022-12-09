@@ -1,25 +1,24 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO  # 加上這行
 import json
+import mpld3
 
 
 
 app = Flask(__name__)
 
-socketio = SocketIO(app)  # 加上這行
+
+socketio = SocketIO(app,max_http_buffer_size = 50*1000*1000)  # 加上這行
+
+
 g_data = None
 g_img = None
+g_img_ = None
 
 @app.route('/')
+@app.route('/home')
 def index():
-    global g_data
-    print(g_data)
-    if g_data != None:
-        show = g_data['foo']
-        return show
-    else:
-        return 'hello socketio'
-        
+    return render_template("hello.html")
 @app.route('/img')
 def img():
     
@@ -55,11 +54,16 @@ def clear_img(data):
     g_img = None
     return 'clear img'
 
-
-@socketio.on('test')
-def test():
-    socketio.send("test")
-
+@socketio.on('img_')
+def get_img_(data):
+    #socketio.emit('get', data)
+    #print(data)
+    img = data['img_']
+    
+    global g_img
+    #g_img = json.dumps(data)
+    g_img = mpld3.fig_to_d3(img)
+    return 'get data'
 
 if __name__ == "__main__":
-    socketio.run(app,debug=True)
+    socketio.run(app,port=8888,debug=True)

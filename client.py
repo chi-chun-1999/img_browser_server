@@ -27,7 +27,7 @@ def test_img():
 
 sio = socketio.Client()
 
-sio.connect('http://127.0.0.1:5000')
+sio.connect('http://127.0.0.1:8888')
 print(sio.sid)
 
 img_html = test_img()
