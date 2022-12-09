@@ -12,10 +12,15 @@ class ImgBrowser():
         img_html = mpld3.fig_to_html(fig)
         sio.emit('img',img_html)
         sio.disconnect()
-    def show_img(self,fig):
+
+    def imshow(self,img):
+
+        fig,ax = plt.subplots()
+        ax.imshow(img)
         sio = socketio.Client()
         sio.connect(self.__connect_string)
-        sio.emit('img_',{'img_':fig})
+        img_html = mpld3.fig_to_html(fig)
+        sio.emit('img',img_html)
         sio.disconnect()
 
     def clear(self):
@@ -23,6 +28,7 @@ class ImgBrowser():
         sio.connect(self.__connect_string)
         sio.emit('clear',0)
         sio.disconnect()
+        
 
 
 
